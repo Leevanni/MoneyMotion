@@ -3,13 +3,26 @@ package com.example.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+
 public class TransactionRequestDto {
 	
+	@Null(groups = OnCreate.class)
+	@NotNull(groups = OnUpdate.class)
 	private Long id;
+	
 	private LocalDate date;
+	
+	@NotNull(groups = {OnCreate.class, OnUpdate.class})
 	private Long userId;
+	
+	@Min(value = 1, message = "Amount cannot be less than zero")
 	private BigDecimal amount;
+	
 	private String description;
+	
 	private String category;
 	
 	public Long getId() {
