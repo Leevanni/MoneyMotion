@@ -4,17 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Positive;
 
 public class TransactionRequestDto {
-	
-	@Null(message = "Transaction ID must not be provided when creating a transaction", groups = OnCreate.class)
-	@NotNull(message = "Transaction ID is required when updating a transaction", groups = OnUpdate.class)
-	private Long id;
-	
+		
 	@NotNull(message = "Transaction date is required", groups = { OnCreate.class, OnUpdate.class })
 	private LocalDate date;
 	
@@ -23,18 +20,14 @@ public class TransactionRequestDto {
 	
 	@NotNull(message = "Amount is required", groups = { OnCreate.class, OnUpdate.class })
 	@Positive(message = "Amount must be greater than zero", groups = { OnCreate.class, OnUpdate.class })
+	@Digits(integer = 10, fraction = 2, message = "Amount must be a valid monetary value", groups = { OnCreate.class, OnUpdate.class })
 	private BigDecimal amount;
 	
 	private String description;
 	
 	private String category;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+
 	public LocalDate getDate() {
 		return date;
 	}
@@ -67,7 +60,7 @@ public class TransactionRequestDto {
 	}
 	@Override
 	public String toString() {
-		return "TransactionRequestDto [id=" + id + ", date=" + date + ", userId=" + userId + ", amount=" + amount
+		return "TransactionRequestDto [date=" + date + ", userId=" + userId + ", amount=" + amount
 				+ ", description=" + description + ", category=" + category + "]";
 	}
 }
