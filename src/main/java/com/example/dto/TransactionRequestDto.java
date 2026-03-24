@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Positive;
 
 public class TransactionRequestDto {
+	// On update, only the amount, description and category can change.
 		
 	@NotNull(message = "Transaction date is required", groups = { OnCreate.class, OnUpdate.class })
 	private LocalDate date;

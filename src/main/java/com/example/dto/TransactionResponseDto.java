@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class TransactionResponseDto {
+	
 	private Long id;
 	private LocalDate date;
 	private Long userId;

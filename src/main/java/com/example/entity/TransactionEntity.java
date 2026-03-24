@@ -19,9 +19,18 @@ public class TransactionEntity {
 	private BigDecimal amount;
 	private LocalDate date;
 	private String description;
-	private String category;
+	private String category;	
 	private Long userId;
+	private LocalDate updatedAt;
 	
+	
+	public LocalDate getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(LocalDate updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -61,6 +70,8 @@ public class TransactionEntity {
 	@Override
 	public String toString() {
 		return "TransactionEntity [id=" + id + ", amount=" + amount + ", date=" + date + ", description=" + description
-				+ ", category=" + category + ", userId=" + userId + "]";
+				+ ", category=" + category + ", userId=" + userId + ", updatedAt=" + updatedAt + "]";
 	}
+
+
 }

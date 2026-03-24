@@ -1,6 +1,7 @@
 package com.example.service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -45,5 +46,36 @@ public class TransactionService {
 		response.setCategory(saved.getCategory());
 		
 		return response;
+	}
+	
+	public TransactionResponseDto updateTransaction(Long id, TransactionRequestDto transaction) {
+		
+		Optional<TransactionEntity> entity = respository.findById(id);
+		
+		// If transaction id is not found handle it
+		
+		entity.get().setAmount(transaction.getAmount());
+		entity.get().setCategory(transaction.getCategory());
+		
+	}
+	
+	public boolean hasEditableFields(TransactionRequestDto transaction) {
+		return transaction.getAmount() != null
+		        || transaction.getCategory() != null
+		        || transaction.getDescription() != null;
+	}
+	
+	public String normalizeTextField(String value) throws IllegalArgumentException {
+	    if (value == null) {
+	        return null;
+	    }
+	    
+	    String trimmedValue = value.trim();
+
+	    if (trimmedValue.isBlank()) {
+	        throw new IllegalArgumentException("Value cannot be blank");
+	    }
+
+	    return trimmedValue.toLowerCase();
 	}
 }
