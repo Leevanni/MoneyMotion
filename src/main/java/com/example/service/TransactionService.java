@@ -57,6 +57,8 @@ public class TransactionService {
 		entity.get().setAmount(transaction.getAmount());
 		entity.get().setCategory(transaction.getCategory());
 		
+		return null;
+		
 	}
 	
 	public boolean hasEditableFields(TransactionRequestDto transaction) {
