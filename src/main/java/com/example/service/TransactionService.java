@@ -52,10 +52,11 @@ public class TransactionService {
 		
 		Optional<TransactionEntity> entity = respository.findById(id);
 		
-		// If transaction id is not found handle it
-		
-		entity.get().setAmount(transaction.getAmount());
-		entity.get().setCategory(transaction.getCategory());
+		if (hasEditableFields(transaction)) {
+			
+		} else {
+			// No changes method
+		}
 		
 		return null;
 		
@@ -80,4 +81,10 @@ public class TransactionService {
 
 	    return trimmedValue.toLowerCase();
 	}
+	
+	public boolean hasChanges(TransactionRequestDto request, TransactionEntity entity) {
+		return false;
+	}
+	
+	
 }
