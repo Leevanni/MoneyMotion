@@ -83,7 +83,14 @@ public class TransactionService {
 	}
 	
 	public boolean hasChanges(TransactionRequestDto request, TransactionEntity entity) {
-		return false;
+		
+		if (request == null) {
+			
+		}
+		
+		if (request.getAmount().compareTo(entity.getAmount())) {
+			
+		}
 	}
 	
 	
