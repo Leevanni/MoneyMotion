@@ -82,15 +82,39 @@ public class TransactionService {
 	    return trimmedValue.toLowerCase();
 	}
 	
-	public boolean hasChanges(TransactionRequestDto request, TransactionEntity entity) {
+	public boolean hasChanges(TransactionRequestDto request, TransactionEntity entity) throws IllegalArgumentException {
 		
-		if (request == null) {
-			
+		if (request.getAmount() != null) {
+			if (request.getAmount().compareTo(entity.getAmount()) != 0) {
+				return true;
+			}
 		}
 		
-		if (request.getAmount().compareTo(entity.getAmount())) {
+		if (request.getDescription() != null) {
+			String normalizedRequestDescription = normalizeTextField(request.getDescription());
+			String normalizedEntityDescription = normalizeTextField(entity.getDescription());
 			
+			if (!normalizedRequestDescription.equals(normalizedEntityDescription)) {
+				return true;
+			}
 		}
+		
+		if (request.getCategory() != null) {
+			String normalizedRequestCategory = normalizeTextField(request.getCategory());
+			String normalizedEntityCategory = normalizeTextField(entity.getCategory());
+			
+			if (!normalizedRequestCategory.equals(normalizedEntityCategory)) {
+				return true;
+			}
+		}
+		
+		
+		return false;
+		
+	}
+	
+	public boolean textFieldChanged(String textOne, String textTwo) {
+		return textOne.equals(textTwo);
 	}
 	
 	
