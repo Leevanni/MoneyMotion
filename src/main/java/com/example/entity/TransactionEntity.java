@@ -21,13 +21,13 @@ public class TransactionEntity {
 	private String description;
 	private String category;	
 	private Long userId;
-	private LocalDate updatedAt;
+	private LocalDateTime updatedAt;
 	
 	
-	public LocalDate getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
-	public void setUpdatedAt(LocalDate updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 

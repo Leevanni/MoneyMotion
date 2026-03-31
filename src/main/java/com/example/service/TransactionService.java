@@ -1,6 +1,8 @@
 package com.example.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -94,7 +96,7 @@ public class TransactionService {
 			String normalizedRequestDescription = normalizeTextField(request.getDescription());
 			String normalizedEntityDescription = normalizeTextField(entity.getDescription());
 			
-			if (!normalizedRequestDescription.equals(normalizedEntityDescription)) {
+			if (textFieldChanged(normalizedRequestDescription, normalizedEntityDescription)) {
 				return true;
 			}
 		}
@@ -103,7 +105,7 @@ public class TransactionService {
 			String normalizedRequestCategory = normalizeTextField(request.getCategory());
 			String normalizedEntityCategory = normalizeTextField(entity.getCategory());
 			
-			if (!normalizedRequestCategory.equals(normalizedEntityCategory)) {
+			if (textFieldChanged(normalizedRequestCategory, normalizedEntityCategory)) {
 				return true;
 			}
 		}
@@ -114,8 +116,51 @@ public class TransactionService {
 	}
 	
 	public boolean textFieldChanged(String textOne, String textTwo) {
-		return textOne.equals(textTwo);
+		return !textOne.equals(textTwo);
 	}
 	
-	
+	public String applyUpdates(TransactionRequestDto request, TransactionEntity entity) {
+		
+		if (!hasChanges(request, entity)) {
+			return "No changes detected";
+		}
+		
+		if (request.getAmount() != null) {
+			if (request.getAmount().compareTo(entity.getAmount()) != 0) {
+				entity.setAmount(request.getAmount());
+			}
+		}
+		
+		if (request.getDescription() != null) {
+			String requestDescription = request.getDescription();
+			String EntityDescription = entity.getDescription();
+			
+			String normalizedRequestDescription = normalizeTextField(requestDescription);
+			String normalizedEntityDescription = normalizeTextField(EntityDescription);
+			
+			if (textFieldChanged(normalizedRequestDescription, normalizedEntityDescription)) {
+				entity.setDescription(requestDescription);
+			}
+		}
+		
+		if (request.getCategory() != null) {
+			String requestCategory = request.getCategory();
+			String EntityCategory = entity.getCategory();
+			
+			
+			String normalizedRequestCategory = normalizeTextField(requestCategory);
+			String normalizedEntityCategory = normalizeTextField(EntityCategory);
+			
+			if (textFieldChanged(normalizedRequestCategory, normalizedEntityCategory)) {
+				entity.setCategory(normalizedRequestCategory);
+			}
+		}
+		
+		LocalDateTime today = LocalDateTime.now();
+		
+		entity.setUpdatedAt(today);
+		respository.save(entity);
+		
+		return "Changes saved";
+	}
 }

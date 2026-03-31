@@ -2,6 +2,7 @@ package com.example.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TransactionResponseDto {
 	
@@ -11,7 +12,7 @@ public class TransactionResponseDto {
 	private BigDecimal amount;
 	private String description;
 	private String category;
-	
+	private LocalDateTime updatedAt;
 	
 	public Long getId() {
 		return id;
@@ -50,9 +51,16 @@ public class TransactionResponseDto {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+	
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 	@Override
 	public String toString() {
 		return "TransactionResponseDto [id=" + id + ", date=" + date + ", userId=" + userId + ", amount=" + amount
-				+ ", description=" + description + ", category=" + category + "]";
+				+ ", description=" + description + ", category=" + category + ", updatedAt=" + updatedAt + "]";
 	}
 }
