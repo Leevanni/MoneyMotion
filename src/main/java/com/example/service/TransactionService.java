@@ -52,13 +52,31 @@ public class TransactionService {
 	
 	public TransactionResponseDto updateTransaction(Long id, TransactionRequestDto transaction) {
 		
-		Optional<TransactionEntity> entity = respository.findById(id);
-		
 		if (hasEditableFields(transaction)) {
+			String description = transaction.getDescription();
+			String category = transaction.getCategory();
+			
+			TransactionEntity existingTransaction = respository.getById(id);
+			
+			if (existingTransaction != null) {
+				if (hasChanges(transaction, existingTransaction)) {
+					String transactionResult = applyUpdates(transaction, existingTransaction);
+					
+					
+					// return response dto
+				} else {
+					// Not changes detected handle this case
+				}
+			} else {
+				// Handle this case
+			}
+			
+
 			
 		} else {
-			// No changes method
+			// bad request handle this case
 		}
+		
 		
 		return null;
 		
@@ -70,7 +88,7 @@ public class TransactionService {
 		        || transaction.getDescription() != null;
 	}
 	
-	public String normalizeTextField(String value) throws IllegalArgumentException {
+	public String normalizeTextField(String value) throws IllegalArgumentException { // This methods determins if editable fields are valid
 	    if (value == null) {
 	        return null;
 	    }
@@ -133,13 +151,13 @@ public class TransactionService {
 		
 		if (request.getDescription() != null) {
 			String requestDescription = request.getDescription();
-			String EntityDescription = entity.getDescription();
+			String entityDescription = entity.getDescription();
 			
 			String normalizedRequestDescription = normalizeTextField(requestDescription);
-			String normalizedEntityDescription = normalizeTextField(EntityDescription);
+			String normalizedEntityDescription = normalizeTextField(entityDescription);
 			
 			if (textFieldChanged(normalizedRequestDescription, normalizedEntityDescription)) {
-				entity.setDescription(requestDescription);
+				entity.setDescription(requestDescription.trim());
 			}
 		}
 		
