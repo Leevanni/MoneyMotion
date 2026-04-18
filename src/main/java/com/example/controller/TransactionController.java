@@ -1,47 +1,65 @@
 package com.example.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.dto.OnCreate;
-import com.example.dto.OnUpdate;
-import com.example.dto.TransactionRequestDto;
+import com.example.dto.CreateTransactionRequestDto;
 import com.example.dto.TransactionResponseDto;
-import com.example.entity.TransactionEntity;
+import com.example.dto.UpdateTransactionRequestDto;
 import com.example.service.TransactionService;
 
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/api/transactions")
 public class TransactionController {
 
-	private TransactionService service;
+	private final TransactionService transactionService;
 	
 	public TransactionController(TransactionService service) {
-		this.service = service;
+		this.transactionService = service;
 	}
 	
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<TransactionResponseDto> createTransaction(
-			@RequestBody @Validated(OnCreate.class) TransactionRequestDto request) {
+			@RequestBody CreateTransactionRequestDto request) {
 		
-		TransactionResponseDto reponse = service.createTransaction(request);
+		TransactionResponseDto reponse = transactionService.createTransaction(request);
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(reponse);
 	}
 	
-	@PutMapping("transactions/{id}")
+	@GetMapping
+	public ResponseEntity<List<TransactionResponseDto>> getAllTransactions() {
+		List<TransactionResponseDto> transactionList = transactionService.getAllTransactions();
+		
+		return ResponseEntity.ok(transactionList);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<TransactionResponseDto> getTransaction(@PathVariable Long id) {
+		TransactionResponseDto response = transactionService.getTransactionById(id);
+	
+		return ResponseEntity.ok(response);
+	}
+	
+	@PatchMapping("/{id}")
 	public ResponseEntity<TransactionResponseDto> updateTransaction(
 			@PathVariable Long id, 
-			@RequestBody @Validated(OnUpdate.class) TransactionRequestDto request) {
+			@RequestBody UpdateTransactionRequestDto request) {
+		
+		TransactionResponseDto response = transactionService.updateTransaction(id, request);
 		
 		
-		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(response);
 	}
 }

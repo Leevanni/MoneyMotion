@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,23 @@ import com.example.repository.TransactionRespository;
 public class TransactionService {
 	
 	
-	private TransactionRespository respository;
+	private final TransactionRespository respository;
 	
 	public TransactionService(TransactionRespository respository) {
 		this.respository = respository;
+	}
+	
+	public List<TransactionResponseDto> getAllTransactions() {
+		return respository.findAll()
+				.stream()
+				.map(this::mapToResponse)
+				.toList();
+	}
+	
+	public TransactionResponseDto getTransactionById(Long id) {
+		TransactionEntity entity = respository.findById(id).orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
+		
+		return mapToResponse(entity);
 	}
 	
 	public TransactionResponseDto createTransaction(CreateTransactionRequestDto transaction) {
@@ -37,22 +51,13 @@ public class TransactionService {
 		
 		TransactionEntity saved = respository.save(entity);
 		
-		TransactionResponseDto response = new TransactionResponseDto();
-		
-		response.setId(saved.getId());
-		response.setDate(saved.getDate());
-		response.setUserId(saved.getUserId());
-		response.setAmount(saved.getAmount());
-		response.setDescription(saved.getDescription());
-		response.setCategory(saved.getCategory());
-		
-		return response;
+		return mapToResponse(saved);
 	}
 	
 	public TransactionResponseDto updateTransaction(Long id, UpdateTransactionRequestDto transaction) {
 		
 		if (!hasEditableFields(transaction)) {
-			throw new IllegalArgumentException("At least one editable field must be preovided");
+			throw new IllegalArgumentException("At least one editable field must be provided");
 		}
 		
 		TransactionEntity entity = respository.findById(id)
