@@ -1,14 +1,13 @@
 package com.example.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.dto.TransactionRequestDto;
+import com.example.dto.CreateTransactionRequestDto;
 import com.example.dto.TransactionResponseDto;
+import com.example.dto.UpdateTransactionRequestDto;
 import com.example.entity.TransactionEntity;
 import com.example.repository.TransactionRespository;
 
@@ -22,7 +21,7 @@ public class TransactionService {
 		this.respository = respository;
 	}
 	
-	public TransactionResponseDto createTransaction(TransactionRequestDto transaction) {
+	public TransactionResponseDto createTransaction(CreateTransactionRequestDto transaction) {
 		
 		if (transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
 			throw new IllegalArgumentException("Amount must be greater than 0");
@@ -50,45 +49,33 @@ public class TransactionService {
 		return response;
 	}
 	
-	public TransactionResponseDto updateTransaction(Long id, TransactionRequestDto transaction) {
+	public TransactionResponseDto updateTransaction(Long id, UpdateTransactionRequestDto transaction) {
 		
-		if (hasEditableFields(transaction)) {
-			String description = transaction.getDescription();
-			String category = transaction.getCategory();
-			
-			TransactionEntity existingTransaction = respository.getById(id);
-			
-			if (existingTransaction != null) {
-				if (hasChanges(transaction, existingTransaction)) {
-					String transactionResult = applyUpdates(transaction, existingTransaction);
-					
-					
-					// return response dto
-				} else {
-					// Not changes detected handle this case
-				}
-			} else {
-				// Handle this case
-			}
-			
-
-			
-		} else {
-			// bad request handle this case
+		if (!hasEditableFields(transaction)) {
+			throw new IllegalArgumentException("At least one editable field must be preovided");
 		}
 		
+		TransactionEntity entity = respository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
 		
-		return null;
+		if (!hasChanges(transaction, entity)) {
+			throw new IllegalArgumentException("No changes detected");
+		}
 		
+		applyUpdates(transaction, entity);
+		
+		entity.setUpdatedAt(LocalDateTime.now());
+		TransactionEntity saved = respository.save(entity);
+		
+		return mapToResponse(saved);
 	}
 	
-	public boolean hasEditableFields(TransactionRequestDto transaction) {
-		return transaction.getAmount() != null
-		        || transaction.getCategory() != null
+	private boolean hasEditableFields(UpdateTransactionRequestDto transaction) {
+		        return transaction.getCategory() != null
 		        || transaction.getDescription() != null;
 	}
 	
-	public String normalizeTextField(String value) throws IllegalArgumentException { // This methods determins if editable fields are valid
+	private String normalizeTextField(String value) throws IllegalArgumentException { // This methods determins if editable fields are valid
 	    if (value == null) {
 	        return null;
 	    }
@@ -102,13 +89,7 @@ public class TransactionService {
 	    return trimmedValue.toLowerCase();
 	}
 	
-	public boolean hasChanges(TransactionRequestDto request, TransactionEntity entity) throws IllegalArgumentException {
-		
-		if (request.getAmount() != null) {
-			if (request.getAmount().compareTo(entity.getAmount()) != 0) {
-				return true;
-			}
-		}
+	private boolean hasChanges(UpdateTransactionRequestDto request, TransactionEntity entity) throws IllegalArgumentException {
 		
 		if (request.getDescription() != null) {
 			String normalizedRequestDescription = normalizeTextField(request.getDescription());
@@ -128,27 +109,15 @@ public class TransactionService {
 			}
 		}
 		
-		
 		return false;
-		
 	}
 	
-	public boolean textFieldChanged(String textOne, String textTwo) {
+	private boolean textFieldChanged(String textOne, String textTwo) {
 		return !textOne.equals(textTwo);
 	}
 	
-	public String applyUpdates(TransactionRequestDto request, TransactionEntity entity) {
-		
-		if (!hasChanges(request, entity)) {
-			return "No changes detected";
-		}
-		
-		if (request.getAmount() != null) {
-			if (request.getAmount().compareTo(entity.getAmount()) != 0) {
-				entity.setAmount(request.getAmount());
-			}
-		}
-		
+	private void applyUpdates(UpdateTransactionRequestDto request, TransactionEntity entity) {
+				
 		if (request.getDescription() != null) {
 			String requestDescription = request.getDescription();
 			String entityDescription = entity.getDescription();
@@ -173,12 +142,18 @@ public class TransactionService {
 				entity.setCategory(normalizedRequestCategory);
 			}
 		}
+	}
+	
+	private TransactionResponseDto mapToResponse(TransactionEntity entity) {
+		TransactionResponseDto response = new TransactionResponseDto();
 		
-		LocalDateTime today = LocalDateTime.now();
-		
-		entity.setUpdatedAt(today);
-		respository.save(entity);
-		
-		return "Changes saved";
+		response.setId(entity.getId());
+		response.setDate(entity.getDate());
+		response.setUserId(entity.getUserId());
+		response.setAmount(entity.getAmount());
+		response.setDescription(entity.getDescription());
+		response.setCategory(entity.getCategory());
+		response.setUpdatedAt(entity.getUpdatedAt());
+		return response;
 	}
 }
