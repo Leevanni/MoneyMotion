@@ -8,9 +8,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransactionEntity {
 
 	@Id
@@ -22,56 +30,5 @@ public class TransactionEntity {
 	private String category;
 	private Long userId;
 	private LocalDateTime updatedAt;
-
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public BigDecimal getAmount() {
-		return amount;
-	}
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-	public LocalDate getDate() {
-		return date;
-	}
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public Long getUserId() {
-		return userId;
-	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-	@Override
-	public String toString() {
-		return "TransactionEntity [id=" + id + ", amount=" + amount + ", date=" + date + ", description=" + description
-				+ ", category=" + category + ", userId=" + userId + ", updatedAt=" + updatedAt + "]";
-	}
-
 
 }

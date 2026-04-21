@@ -137,11 +137,11 @@ public class TransactionService {
 
 		if (request.getCategory() != null) {
 			String requestCategory = request.getCategory();
-			String EntityCategory = entity.getCategory();
+			String entityCategory = entity.getCategory();
 
 
 			String normalizedRequestCategory = normalizeTextField(requestCategory);
-			String normalizedEntityCategory = normalizeTextField(EntityCategory);
+			String normalizedEntityCategory = normalizeTextField(entityCategory);
 
 			if (textFieldChanged(normalizedRequestCategory, normalizedEntityCategory)) {
 				entity.setCategory(normalizedRequestCategory);
