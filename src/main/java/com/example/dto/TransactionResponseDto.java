@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TransactionResponseDto {
-	
+
 	private Long id;
 	private LocalDate date;
 	private Long userId;
@@ -13,7 +13,7 @@ public class TransactionResponseDto {
 	private String description;
 	private String category;
 	private LocalDateTime updatedAt;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -47,11 +47,11 @@ public class TransactionResponseDto {
 	public String getCategory() {
 		return category;
 	}
-	
+
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
+
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}

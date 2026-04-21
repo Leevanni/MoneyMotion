@@ -4,7 +4,7 @@ public class UpdateTransactionRequestDto {
 
 	private String description;
 	private String category;
-	
+
 	public String getDescription() {
 		return description;
 	}

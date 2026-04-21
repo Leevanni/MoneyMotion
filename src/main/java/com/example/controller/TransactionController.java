@@ -23,43 +23,43 @@ import com.example.service.TransactionService;
 public class TransactionController {
 
 	private final TransactionService transactionService;
-	
+
 	public TransactionController(TransactionService service) {
 		this.transactionService = service;
 	}
-	
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<TransactionResponseDto> createTransaction(
 			@RequestBody CreateTransactionRequestDto request) {
-		
+
 		TransactionResponseDto reponse = transactionService.createTransaction(request);
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(reponse);
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<List<TransactionResponseDto>> getAllTransactions() {
 		List<TransactionResponseDto> transactionList = transactionService.getAllTransactions();
-		
+
 		return ResponseEntity.ok(transactionList);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<TransactionResponseDto> getTransaction(@PathVariable Long id) {
 		TransactionResponseDto response = transactionService.getTransactionById(id);
-	
+
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@PatchMapping("/{id}")
 	public ResponseEntity<TransactionResponseDto> updateTransaction(
-			@PathVariable Long id, 
+			@PathVariable Long id,
 			@RequestBody UpdateTransactionRequestDto request) {
-		
+
 		TransactionResponseDto response = transactionService.updateTransaction(id, request);
-		
-		
+
+
 		return ResponseEntity.ok(response);
 	}
 }

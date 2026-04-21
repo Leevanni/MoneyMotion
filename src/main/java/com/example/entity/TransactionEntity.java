@@ -12,18 +12,18 @@ import jakarta.persistence.Id;
 
 @Entity
 public class TransactionEntity {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private BigDecimal amount;
 	private LocalDate date;
 	private String description;
-	private String category;	
+	private String category;
 	private Long userId;
 	private LocalDateTime updatedAt;
-	
-	
+
+
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
