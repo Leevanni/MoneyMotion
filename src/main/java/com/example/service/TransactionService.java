@@ -10,6 +10,7 @@ import com.example.dto.CreateTransactionRequestDto;
 import com.example.dto.TransactionResponseDto;
 import com.example.dto.UpdateTransactionRequestDto;
 import com.example.entity.TransactionEntity;
+import com.example.exception.ResourceNotFoundException;
 import com.example.repository.TransactionRespository;
 
 @Service
@@ -30,7 +31,7 @@ public class TransactionService {
 	}
 
 	public TransactionResponseDto getTransactionById(Long id) {
-		TransactionEntity entity = respository.findById(id).orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
+		TransactionEntity entity = respository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
 		return mapToResponse(entity);
 	}
@@ -61,7 +62,7 @@ public class TransactionService {
 		}
 
 		TransactionEntity entity = respository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
 		if (!hasChanges(transaction, entity)) {
 			throw new IllegalArgumentException("No changes detected");
