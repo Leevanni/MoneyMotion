@@ -17,26 +17,28 @@ import com.example.repository.TransactionRespository;
 public class TransactionService {
 
 
-	private final TransactionRespository respository;
+	private final TransactionRespository transactionRespository;
 
 	public TransactionService(TransactionRespository respository) {
-		this.respository = respository;
+		this.transactionRespository = respository;
 	}
 
 	public List<TransactionResponseDto> getAllTransactions() {
-		return respository.findAll()
+		return transactionRespository.findAll()
 				.stream()
 				.map(this::mapToResponse)
 				.toList();
 	}
 
 	public TransactionResponseDto getTransactionById(Long id) {
-		TransactionEntity entity = respository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+		TransactionEntity entity = transactionRespository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
 		return mapToResponse(entity);
 	}
 
 	public TransactionResponseDto createTransaction(CreateTransactionRequestDto transaction) {
+		
+		UserEntity user = 
 
 		if (transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
 			throw new IllegalArgumentException("Amount must be greater than 0");
@@ -50,7 +52,7 @@ public class TransactionService {
 		entity.setDescription(transaction.getDescription());
 		entity.setCategory(transaction.getCategory());
 
-		TransactionEntity saved = respository.save(entity);
+		TransactionEntity saved = transactionRespository.save(entity);
 
 		return mapToResponse(saved);
 	}
@@ -61,7 +63,7 @@ public class TransactionService {
 			throw new IllegalArgumentException("At least one editable field must be provided");
 		}
 
-		TransactionEntity entity = respository.findById(id)
+		TransactionEntity entity = transactionRespository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
 		if (!hasChanges(transaction, entity)) {
@@ -71,7 +73,7 @@ public class TransactionService {
 		applyUpdates(transaction, entity);
 
 		entity.setUpdatedAt(LocalDateTime.now());
-		TransactionEntity saved = respository.save(entity);
+		TransactionEntity saved = transactionRespository.save(entity);
 
 		return mapToResponse(saved);
 	}
@@ -155,7 +157,7 @@ public class TransactionService {
 
 		response.setId(entity.getId());
 		response.setDate(entity.getDate());
-		response.setUserId(entity.getUserId());
+		response.setUserId(entity.getUser().getId());
 		response.setAmount(entity.getAmount());
 		response.setDescription(entity.getDescription());
 		response.setCategory(entity.getCategory());
