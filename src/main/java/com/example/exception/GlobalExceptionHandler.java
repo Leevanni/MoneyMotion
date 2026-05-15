@@ -13,6 +13,25 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<ApiErrorResponse> handleResourceNotFound(
+			ResourceNotFoundException ex,
+			HttpServletRequest request
+			) {
+		
+		HttpStatus status = HttpStatus.NOT_FOUND;
+
+		ApiErrorResponse errorResponse = new ApiErrorResponse(
+				LocalDateTime.now(),
+				status.value(),
+				status.getReasonPhrase(),
+				ex.getMessage(),
+				request.getRequestURI()
+		);
+		
+		return ResponseEntity.status(status).body(errorResponse);
+	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
@@ -42,25 +61,6 @@ public class GlobalExceptionHandler {
 				status.value(),
 				status.getReasonPhrase(),
 				"An unexpected error occurred",
-				request.getRequestURI()
-		);
-		
-		return ResponseEntity.status(status).body(errorResponse);
-	}
-	
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ApiErrorResponse> handleResourceNotFound(
-			ResourceNotFoundException ex,
-			HttpServletRequest request
-			) {
-		
-		HttpStatus status = HttpStatus.NOT_FOUND;
-
-		ApiErrorResponse errorResponse = new ApiErrorResponse(
-				LocalDateTime.now(),
-				status.value(),
-				status.getReasonPhrase(),
-				ex.getMessage(),
 				request.getRequestURI()
 		);
 		
